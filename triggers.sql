@@ -1,0 +1,30 @@
+DELIMITER $$ 
+CREATE TRIGGER before_student_insert 
+BEFORE INSERT ON STUDENT 
+FOR EACH ROW 
+BEGIN 
+INSERT INTO STUDENT_LOG (action_type, USN, SName, log_timestamp) 
+VALUES ('INSERT', NEW.USN, NEW.SName, NOW()); 
+END $$ 
+DELIMITER ; 
+
+DELIMITER $$ 
+CREATE TRIGGER after_student_delete 
+AFTER DELETE ON STUDENT 
+FOR EACH ROW 
+BEGIN 
+INSERT INTO STUDENT_LOG (action_type, USN, SName, log_timestamp) 
+VALUES ('DELETE', OLD.USN, OLD.SName, NOW()); 
+END $$ 
+DELIMITER ;
+
+DELIMITER $$ 
+CREATE TRIGGER after_student_update 
+AFTER UPDATE 
+ON STUDENT 
+FOR EACH ROW 
+BEGIN 
+INSERT INTO STUDENT_LOG (action_type, USN, SName, log_timestamp) 
+VALUES ('UPDATE', OLD.USN, SName, NOW()); 
+END $$ 
+DELIMITER ;
